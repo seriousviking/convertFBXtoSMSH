@@ -31,25 +31,32 @@ scenes from FBX files to light-weight GPU-friendly format.
 
 ## Build requirements/recommendations:
 * Autodesk FBX SDK http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416130
+
   I used version 2018.1.1 for VS2015 but earlier versions should work too
+
 * Visual Studio 2015 or later
+
   I did't use any VS-specific features but sometimes used C++11 features
   so any C++11-compliant compiler/IDE should be able to build executable
   if you set up dependencies correctly
 
 ## If you want to use source files in different IDE:
 * Include directories which put in project settings:
+
     $(ProjectDir)lib\jsoncpp\include - JsonCpp library https://github.com/open-source-parsers/jsoncpp
     <Autodesk FBX SDK path>\include
 
 * Library directories which put in project settings:
+
     C:\Program Files\Autodesk\FBX\FBX SDK\2018.1.1\lib\vs2015\x64\debug
 
 * Linker dependencies:
-    libfbxsdk.lib (take appropriate file from FBX SDK)
 
-* Windows executable dependencies (put at the same directory as executable or add path to 
-    PATH environment variable):
+    ibfbxsdk.lib (take appropriate file from FBX SDK)
+
+* Windows executable dependencies (put at the same directory as executable or 
+  add path to PATH environment variable):
+    
     libfbxsdk.dll (take appropriate file from FBX SDK)
 
 * if you're using Visual Studio IDE, it might be useful also to 
@@ -57,11 +64,14 @@ scenes from FBX files to light-weight GPU-friendly format.
   FBX import debugging easier
 
 ## TODO:
+
 * Implement materials import and export.
   Decide whether to save materials separately or with the mesh geometry
+
 * Test performance with two approaches of working with vertex data:
   Structure of Arrays (current) or Array of Structures (alternative)
   Implement alternative approach if it will be faster in some cases
+
 * CMake build system integration
 
 ## License
