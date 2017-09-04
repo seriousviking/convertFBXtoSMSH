@@ -68,6 +68,8 @@ scenes from FBX files to light-weight GPU-friendly format.
 * Implement materials import and export.
   Decide whether to save materials separately or with the mesh geometry
 
+* Finish import and implement exporting tangent and (maybe) binormal vectors
+
 * Test performance with two approaches of working with vertex data:
   Structure of Arrays (current) or Array of Structures (alternative)
   Implement alternative approach if it will be faster in some cases

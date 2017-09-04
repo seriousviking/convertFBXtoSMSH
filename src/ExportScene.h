@@ -11,4 +11,4 @@
 struct ImportFBXResult;
 
 bool exportSceneToFile(const std::string &fileName, const ImportFBXResult &importData, 
-	bool compactJson);
+                       bool compactJson);

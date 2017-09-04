@@ -11,16 +11,16 @@
 template <typename T>
 struct MaterialParam
 {
-	std::string paramName;
-	T value;
+    std::string paramName;
+    T value;
 };
 
 struct Material
 {
-	uint32_t materialId;
-	std::string materialName;
-	std::vector<MaterialParam<float>> floatParams;
-	std::vector<MaterialParam<float[3]>> float3Params;
-	std::vector<MaterialParam<float[4]>> float4Params;
-	std::vector<MaterialParam<int>> intParams;
+    uint32_t materialId;
+    std::string materialName;
+    std::vector<MaterialParam<float>> floatParams;
+    std::vector<MaterialParam<float[3]>> float3Params;
+    std::vector<MaterialParam<float[4]>> float4Params;
+    std::vector<MaterialParam<int>> intParams;
 };

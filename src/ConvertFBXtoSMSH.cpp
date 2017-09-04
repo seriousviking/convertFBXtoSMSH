@@ -14,36 +14,36 @@
 
 int main(int argc, char* argv[])
 {
-	if (argc < 3)
-	{
-		std::cout << "<app_name> importFile exportFile" << std::endl;
-		return -1;
-	}
-	ImportSettings settings;
-	settings.mergeNormalThresholdAngle = 45.0f;
-	std::string importPath(argv[1]);
-	auto importData = importFBXFile(importPath, settings);
+    if (argc < 3)
+    {
+        std::cout << "<app_name> importFile exportFile" << std::endl;
+        return -1;
+    }
+    ImportSettings settings;
+    settings.mergeNormalThresholdAngle = 45.0f;
+    std::string importPath(argv[1]);
+    auto importData = importFBXFile(importPath, settings);
 
-	if (importData.success)
-	{
-		std::string exportPath(argv[2]);
-		uint32_t sceneMeshIndex = 0;
-		for (auto sceneMesh : importData.sceneMeshes)
-		{
-			std::string resultPath = exportPath + "-" + std::to_string(sceneMeshIndex) + ".msh";
-			bool success = exportMeshToFile(resultPath, sceneMesh);
-			if (!success)
-			{
-				std::cout << "Failed to export mesh at path " + resultPath << std::endl;
-			}
-		}
+    if (importData.success)
+    {
+        std::string exportPath(argv[2]);
+        uint32_t sceneMeshIndex = 0;
+        for (auto sceneMesh : importData.sceneMeshes)
+        {
+            std::string resultPath = exportPath + "-" + std::to_string(sceneMeshIndex) + ".msh";
+            bool success = exportMeshToFile(resultPath, sceneMesh);
+            if (!success)
+            {
+                std::cout << "Failed to export mesh at path " + resultPath << std::endl;
+            }
+        }
 
-		std::string scenePath = exportPath + ".scene.json";
-		if (!exportSceneToFile(scenePath, importData, settings.compactSceneJson))
-		{
-			std::cout << "Failed to save scene json at path " + scenePath << std::endl;
-		}
-	}
+        std::string scenePath = exportPath + ".scene.json";
+        if (!exportSceneToFile(scenePath, importData, settings.compactSceneJson))
+        {
+            std::cout << "Failed to save scene json at path " + scenePath << std::endl;
+        }
+    }
     return 0;
 }
 
