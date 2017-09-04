@@ -11,6 +11,12 @@ scenes from FBX files to light-weight GPU-friendly format.
   contents: objects, their names, uids, parents and transform. So you 
   can build scene graph using this information
 
+## Usage:
+* build executable
+* in command line, use ConvertFBXtoSMSH <source_fbx_file> <destination_file_template>
+  
+destination_file_template can be just a valid file name for now, later that will be changed
+
 ## Project structure
     * src/ - source files
         * Common.h - common constants/data types
