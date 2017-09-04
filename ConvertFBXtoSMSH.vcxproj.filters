@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="lib">
+      <UniqueIdentifier>{7fe2cabe-1cf7-430b-b10e-6d90aa19dea4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\jsoncpp">
+      <UniqueIdentifier>{1f667908-7635-4498-83d1-76d555fab217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\jsoncpp\include">
+      <UniqueIdentifier>{b80cc354-d72f-42ac-8a1c-593ca040defd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\jsoncpp\src">
+      <UniqueIdentifier>{00e8126f-8c94-4af6-813f-1e29dba54349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="lib\jsoncpp\include\json">
+      <UniqueIdentifier>{c324fc56-4194-4135-9c99-ce117ffecf5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{287a4f1d-272d-4238-a91a-c07948360b0e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lib\jsoncpp\include\json\json.h">
+      <Filter>lib\jsoncpp\include\json</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\jsoncpp\include\json\json-forwards.h">
+      <Filter>lib\jsoncpp\include\json</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Common.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ExportMesh.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ExportScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ImportFBX.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StreamMaterialData.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StreamMeshData.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\targetver.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lib\jsoncpp\src\jsoncpp.cpp">
+      <Filter>lib\jsoncpp\src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ConvertFBXtoSMSH.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ExportMesh.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ExportScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ImportFBX.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
+</Project>
