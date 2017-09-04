@@ -30,31 +30,31 @@ scenes from FBX files to light-weight GPU-friendly format.
     * ConvertFBXtoSMSH.sln/.vcxproj* - Visual Studio solution and project files
 
 ## Build requirements/recommendations:
-    * Visual Studio 2015 or later
-	  I did't use any VS-specific features but sometimes used C++11 features
-	  so any C++11-compliant compiler/IDE should be able to build executable
-	  if you set up dependencies correctly
-    * Autodesk FBX SDK http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416130
-      I used version 2018.1.1 for VS2015 but earlier versions should work too
+* Autodesk FBX SDK http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=26416130
+  I used version 2018.1.1 for VS2015 but earlier versions should work too
+* Visual Studio 2015 or later
+  I did't use any VS-specific features but sometimes used C++11 features
+  so any C++11-compliant compiler/IDE should be able to build executable
+  if you set up dependencies correctly
 
 ## If you want to use source files in different IDE:
-    * Include directories which put in project settings:
+* Include directories which put in project settings:
     $(ProjectDir)lib\jsoncpp\include - JsonCpp library https://github.com/open-source-parsers/jsoncpp
     <Autodesk FBX SDK path>\include
 
-    * Library directories which put in project settings:
+* Library directories which put in project settings:
     C:\Program Files\Autodesk\FBX\FBX SDK\2018.1.1\lib\vs2015\x64\debug
 
-    * Linker dependencies:
-    libfbxsdk.lib
+* Linker dependencies:
+    libfbxsdk.lib (take appropriate file from FBX SDK)
 
-    * Windows executable dependencies (put at the same directory as executable or add path to 
+* Windows executable dependencies (put at the same directory as executable or add path to 
     PATH environment variable):
-    libfbxsdk.dll
+    libfbxsdk.dll (take appropriate file from FBX SDK)
 
-    * if you're using Visual Studio IDE, it might be useful also to 
-    put libfbxsdk.pdb to the same directory as executable file to make 
-    FBX import debugging easier
+* if you're using Visual Studio IDE, it might be useful also to 
+  put libfbxsdk.pdb to the same directory as executable file to make 
+  FBX import debugging easier
 
 ## TODO:
 * Implement materials import and export.
