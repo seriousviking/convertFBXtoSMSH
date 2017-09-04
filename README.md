@@ -4,14 +4,12 @@ ConvertFBXtoSMSH application is a command-line utility which converts
 scenes from FBX files to light-weight GPU-friendly format.
 
 ## Features:
-    * import meshes from FBX scene
-    * combine vertices so that all vertex data streams will have the same 
-      length
-    * merge vertices with the same positions and texture coordinates and 
-      similar normals
-    * export each mesh in separate file, also create Json file with scene 
-      contents: objects, their names, uids, parents and transform. So you 
-      can build scene graph using this information
+* import meshes from FBX scene
+* combine vertices so that all vertex data streams will have the same length
+* merge vertices with the same positions and texture coordinates and similar normals
+* export each mesh in separate file, also create Json file with scene 
+  contents: objects, their names, uids, parents and transform. So you 
+  can build scene graph using this information
 
 ## Project structure
     * src/ - source files
@@ -29,8 +27,9 @@ scenes from FBX files to light-weight GPU-friendly format.
         * Utils.h/.cpp - utility functions
 
     * lib/jsoncpp/* - JsonCpp library source and header files
+    * ConvertFBXtoSMSH.sln/.vcxproj* - Visual Studio solution and project files
 
-## Build:
+## Build requirements/recommendations:
     * Visual Studio 2015 or later
 	  I did't use any VS-specific features but sometimes used C++11 features
 	  so any C++11-compliant compiler/IDE should be able to build executable
@@ -58,12 +57,12 @@ scenes from FBX files to light-weight GPU-friendly format.
     FBX import debugging easier
 
 ## TODO:
-    * Implement materials import and export. 
-      Decide whether to save materials separately or with the mesh geometry
-    * Test performance with two approaches of working with vertex data:
-      Structure of Arrays (current) or Array of Structures (alternative)
-      Implement alternative approach if it will be faster in some cases
-    * CMake build system integration
+* Implement materials import and export.
+  Decide whether to save materials separately or with the mesh geometry
+* Test performance with two approaches of working with vertex data:
+  Structure of Arrays (current) or Array of Structures (alternative)
+  Implement alternative approach if it will be faster in some cases
+* CMake build system integration
 
 ## License
 See LICENSE file for details. In summary, it's licensed under MIT license
