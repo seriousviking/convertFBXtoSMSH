@@ -54,16 +54,18 @@ destination_file_template can be just a valid file name for now, later that will
 
 * Library directories which put in project settings:
 
-    C:\Program Files\Autodesk\FBX\FBX SDK\2018.1.1\lib\vs2015\x64\debug
+    <Autodesk FBX SDK path>\lib\vs2015\x64\debug
+    
+    For me, <Autodesk FBX SDK path> is
+
+    C:\Program Files\Autodesk\FBX\FBX SDK\2018.1.1
 
 * Linker dependencies:
 
-    ibfbxsdk.lib (take appropriate file from FBX SDK)
+    libfbxsdk-md.lib (take appropriate file from FBX SDK)
 
-* Windows executable dependencies (put at the same directory as executable or 
-  add path to PATH environment variable):
-    
-    libfbxsdk.dll (take appropriate file from FBX SDK)
+    Earlier I used libfbxsdk.lib and placed libfbxsdk.dll but ClassId functions 
+	in FBX SDK do not work in that way.
 
 * if you're using Visual Studio IDE, it might be useful also to 
   put libfbxsdk.pdb to the same directory as executable file to make 
@@ -73,8 +75,6 @@ destination_file_template can be just a valid file name for now, later that will
 
 * Implement materials import and export.
   Decide whether to save materials separately or with the mesh geometry
-
-* Finish import and implement exporting tangent and (maybe) binormal vectors
 
 * Test performance with two approaches of working with vertex data:
   Structure of Arrays (current) or Array of Structures (alternative)

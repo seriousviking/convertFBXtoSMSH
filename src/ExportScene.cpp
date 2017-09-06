@@ -9,6 +9,7 @@
 
 #include "ImportFBX.h"
 #include "Utils.h"
+#include "ExportMaterial.h"
 
 template <typename FloatType>
 void appendObjectNodes(Json::Value &jObjectArray, const std::vector<ObjectNode<FloatType>> &objects)
@@ -28,10 +29,16 @@ void appendObjectNodes(Json::Value &jObjectArray, const std::vector<ObjectNode<F
         jNode["name"] = objectNode.name;
         jNode["uid"] = intToHexString(objectNode.uid); // or just save as uint64_t?
         jNode["parentUid"] = intToHexString(objectNode.parentUid); // or just save as uint64_t?
-        if (objectNode.meshIndex != InvalidID)
+        if (objectNode.meshIndex != InvalidUID)
         {
             jNode["meshIndex"] = objectNode.meshIndex;
         }
+        Json::Value jMaterialArray(Json::arrayValue);
+        for (const auto &materialIndex : objectNode.materialIndices)
+        {
+            jMaterialArray.append(materialIndex);
+        }
+        jNode["materialIndex"] = jMaterialArray;
         jNode["transform"] = jTransform;
         jObjectArray.append(jNode);
     }
@@ -45,6 +52,14 @@ bool exportSceneToFile(const std::string &fileName, const ImportFBXResult &impor
 
     Json::Value jsonRoot;
     jsonRoot["objects"] = jObjectArray;
+
+    Json::Value jMaterialArray;
+    for (const auto &material : importData.sceneMaterials)
+    {
+        jMaterialArray.append(serializeMaterial(material));
+    }
+    jsonRoot["materials"] = jMaterialArray;
+
     Json::StreamWriterBuilder jsonBuilder;
     if (compactJson)
     {

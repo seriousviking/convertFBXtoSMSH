@@ -27,7 +27,6 @@ bool exportMeshToFile(const std::string &fileName, const StreamMesh &meshData)
     writeToStream(ofs, meshData.header.headerSize);
     writeToStream(ofs, meshData.header.version);
     writeToStream(ofs, meshData.header.streamCount);
-    writeToStream(ofs, meshData.header.materialId);
     for (const auto &streamData : meshData.streams)
     {
         writeToStream(ofs, streamData.magicSTRM);
@@ -36,6 +35,7 @@ bool exportMeshToFile(const std::string &fileName, const StreamMesh &meshData)
         writeToStream(ofs, streamData.elementType);
         writeToStream(ofs, streamData.elementSize);
         writeToStream(ofs, streamData.elementVectorSize);
+        writeToStream(ofs, streamData.attributeType);
         ofs.write((char*)streamData.data, streamData.elementCount);
     }
     ofs.close();

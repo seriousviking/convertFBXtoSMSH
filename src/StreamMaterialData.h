@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------------
 #pragma once
 #include "stdafx.h"
+#include "ObjectNode.h"
 
 template <typename T>
 struct MaterialParam
@@ -15,12 +16,15 @@ struct MaterialParam
     T value;
 };
 
+using StringPair = std::pair<std::string, std::string>;
+
 struct Material
 {
-    uint32_t materialId;
+    uint32_t materialId = -1; // TODO: InvalidID
     std::string materialName;
     std::vector<MaterialParam<float>> floatParams;
     std::vector<MaterialParam<float[3]>> float3Params;
     std::vector<MaterialParam<float[4]>> float4Params;
     std::vector<MaterialParam<int>> intParams;
+    std::vector<MaterialParam<std::vector<StringPair>>> mapNameParams; // MapName : MapFile. Multiple values for layered textures
 };

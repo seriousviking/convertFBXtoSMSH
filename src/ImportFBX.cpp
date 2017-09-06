@@ -11,148 +11,17 @@
 
 #include "Common.h"
 #include "Utils.h"
-
-struct IndexSet
-{
-    uint32_t controlPoint = -1;
-    uint32_t normal = -1;
-    uint32_t uv = -1;
-    uint32_t tangent = -1;
-    uint32_t binormal = -1;
-    uint32_t vertexColor = -1;
-
-    bool operator==(const IndexSet& rhs) const
-    {
-        return controlPoint == rhs.controlPoint &&
-            normal == rhs.normal &&
-            uv == rhs.uv &&
-            tangent == rhs.tangent &&
-            binormal == rhs.binormal &&
-            vertexColor == rhs.vertexColor;
-    }
-
-    bool operator<(const IndexSet& rhs) const
-    {
-        return controlPoint < rhs.controlPoint ||
-            (controlPoint == rhs.controlPoint && normal < rhs.normal) ||
-            (controlPoint == rhs.controlPoint && normal == rhs.normal && uv < rhs.uv) ||
-            (controlPoint == rhs.controlPoint && normal == rhs.normal && uv == rhs.uv &&
-                tangent < rhs.tangent) ||
-                (controlPoint == rhs.controlPoint && normal == rhs.normal && uv == rhs.uv &&
-                    tangent == rhs.tangent && binormal < rhs.binormal) ||
-                    (controlPoint == rhs.controlPoint && normal == rhs.normal && uv == rhs.uv &&
-                        tangent == rhs.tangent && binormal == rhs.binormal && vertexColor < rhs.vertexColor);
-    }
-};
-
-template <typename ValueType>
-int getDirectIndexByControlPoint(FbxLayerElementTemplate<ValueType>* element, int controlPointIndex)
-{
-    switch (element->GetReferenceMode())
-    {
-    case FbxGeometryElement::eDirect:
-        return controlPointIndex;
-    case FbxGeometryElement::eIndexToDirect:
-        return element->GetIndexArray().GetAt(controlPointIndex);
-    default:
-        break; // other reference modes not shown here!
-    }
-    return -1;
-}
-
-template <typename ValueType>
-int getDirectIndexByPolygonVertex(FbxLayerElementTemplate<ValueType>* element, int vertexNumber)
-{
-    switch (element->GetReferenceMode())
-    {
-    case FbxGeometryElement::eDirect:
-        return vertexNumber;
-    case FbxGeometryElement::eIndexToDirect:
-        return element->GetIndexArray().GetAt(vertexNumber);
-    default:
-        break; // other reference modes not shown here!
-    }
-    return -1;
-}
-
-template <typename ValueType>
-int getDirectIndex(FbxLayerElementTemplate<ValueType>* element, int controlPointIndex, int vertexNumber)
-{
-    int directIndex = -1;
-    switch (element->GetMappingMode())
-    {
-    default:
-        break;
-    case FbxGeometryElement::eByControlPoint:
-        directIndex = getDirectIndexByControlPoint(element, controlPointIndex);
-        break;
-    case FbxGeometryElement::eByPolygonVertex:
-    {
-        directIndex = getDirectIndexByPolygonVertex(element, vertexNumber);
-    }
-    break;
-    case FbxGeometryElement::eByPolygon: // doesn't make much sense for UVs
-    case FbxGeometryElement::eAllSame:   // doesn't make much sense for UVs
-    case FbxGeometryElement::eNone:       // doesn't make much sense for UVs
-        break;
-    }
-    return directIndex;
-}
-
-template <typename FloatType>
-ObjectNode<FloatType> getObjectNode(FbxNode *fbxNode, const std::map<FbxMesh*, uint32_t> &fbxMeshMap)
-{
-    ObjectNode<FloatType> objectNode;
-    objectNode.uid = fbxNode->GetUniqueID();
-    objectNode.name = fbxNode->GetName();
-    auto fbxParent = fbxNode->GetParent();
-    if (fbxParent != nullptr)
-    {
-        objectNode.parentUid = fbxParent->GetUniqueID();
-    }
-    else
-    {
-        objectNode.parentUid = InvalidID;
-    }
-    auto fbxMesh = fbxNode->GetMesh();
-    auto meshIt = fbxMeshMap.find(fbxMesh);
-    if (meshIt != fbxMeshMap.end())
-    {
-        objectNode.meshIndex = meshIt->second;
-    }
-    else
-    {
-        objectNode.meshIndex = -1;
-    }
-
-    auto localTransform = fbxNode->EvaluateLocalTransform();
-    auto translation = localTransform.GetT();
-    objectNode.translation[0] = static_cast<FloatType>(translation.mData[0]);
-    objectNode.translation[1] = static_cast<FloatType>(translation.mData[1]);
-    objectNode.translation[2] = static_cast<FloatType>(translation.mData[2]);
-    auto rotation = localTransform.GetQ();
-    objectNode.rotation[0] = static_cast<FloatType>(rotation.mData[0]);
-    objectNode.rotation[1] = static_cast<FloatType>(rotation.mData[1]);
-    objectNode.rotation[2] = static_cast<FloatType>(rotation.mData[2]);
-    objectNode.rotation[3] = static_cast<FloatType>(rotation.mData[3]);
-    auto scale = localTransform.GetS();
-    objectNode.scale[0] = static_cast<FloatType>(scale.mData[0]);
-    objectNode.scale[1] = static_cast<FloatType>(scale.mData[1]);
-    objectNode.scale[2] = static_cast<FloatType>(scale.mData[2]);
-    return objectNode;
-}
+#include "UtilsFBX.h"
+#include "IndexSet.h"
 
 ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &settings)
 {
     ImportFBXResult result;
 
     auto sdkManager = FbxManager::Create();
-
     auto ioSettings = FbxIOSettings::Create(sdkManager, IOSROOT);
     sdkManager->SetIOSettings(ioSettings);
-
-    // ... Configure the FbxIOSettings object ...
-
+    // TODO: Configure the FbxIOSettings object if needed
     auto fbxImporter = FbxImporter::Create(sdkManager, "");
     bool importStatus;
     importStatus = fbxImporter->Initialize(path.c_str(), -1, sdkManager->GetIOSettings());
@@ -193,11 +62,12 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
             int polygonCount = fbxMesh->GetPolygonCount();
 
             auto controlPoints = fbxMesh->GetControlPoints();
-            //auto normals = fbxMesh->GetPolygonVertexNormals();
 
             std::vector<IndexSet> indexSets;
             std::vector<FbxVector4> normals;
             std::vector<FbxVector2> UVs;
+            std::vector<FbxVector4> tangents;
+            std::vector<FbxVector4> binormals;
             int vertexId = 0;
             // process polygons - split vertices
             for (int polygonIndex = 0; polygonIndex < polygonCount; polygonIndex++)
@@ -304,6 +174,8 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                             {
                                 int directIndex = getDirectIndexByPolygonVertex(elementTangent, vertexId);
                                 indexSet.tangent = directIndex;
+                                auto tangentValue = elementTangent->GetDirectArray().GetAt(directIndex);
+                                tangents.push_back(tangentValue);
                             }
                         }
                     }
@@ -316,6 +188,8 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                             {
                                 int directIndex = getDirectIndexByPolygonVertex(elementBinormal, vertexId);
                                 indexSet.binormal = directIndex;
+                                auto binormalValue = elementBinormal->GetDirectArray().GetAt(directIndex);
+                                binormals.push_back(binormalValue);
                             }
                         }
                     }
@@ -362,8 +236,6 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
             {
                 std::vector<uint32_t> offsetVector(indexVector.size(), 0);
                 double cosThreshold = std::cos(settings.mergeNormalThresholdAngle * Pi / 180.0f);
-                //auto normals = fbxMesh->GetNormals()
-                //int currentNormal = -1;
                 int currentControlPoint = -1;
                 int currentUV = -1;
                 FbxVector4 currentNormalValue(0, 0, 0, 0);
@@ -378,7 +250,7 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                         currentUV = orderedVertexPair.first.uv;
                         currentNormalValue = vertexNormal;
                         verticesToMerge.clear();
-                        verticesToMerge.push_back(orderedVertexPair.second);//first.normal);
+                        verticesToMerge.push_back(orderedVertexPair.second);
                     }
                     else if (currentControlPoint == orderedVertexPair.first.controlPoint)
                     {
@@ -387,7 +259,7 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                             double cosAngle = currentNormalValue.DotProduct(vertexNormal);
                             if (cosAngle > cosThreshold) // merge
                             {
-                                verticesToMerge.push_back(orderedVertexPair.second);// first.normal);
+                                verticesToMerge.push_back(orderedVertexPair.second);
                             }
                         }
                         else
@@ -470,21 +342,6 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                             return false;
                         }), uniqueVertices.end());
 
-                        /*for (size_t iterIndex = 1; iterIndex < vertexIterators.size(); ++iterIndex)
-                        {
-                            auto currentIter = vertexIterators[iterIndex];
-                            for (size_t index = 0; index < indexVector.size(); ++index)
-                            {
-                                //if (indexVector[index] > currentIter->second) // >= ???
-                                //{
-                                //	if (offsetVector[index] != -1)
-                                //	{
-                                //		offsetVector[index] += 1;
-                                //	}
-                                //}
-                            }
-                            orderedVertices.erase(currentIter->first);
-                        }*/
                         orderedIndexMap.merge(mergePair.second);
                     }
                 }
@@ -495,7 +352,7 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
             // save indices
             if (indexVector.size() > 0)
             {
-                MeshStream indexStream;
+                VectorStream indexStream;
                 indexStream.elementType = static_cast<uint32_t>(StreamElementType::UInt);
                 indexStream.elementVectorSize = 1;
                 if (uniqueVertices.size() < 65535)
@@ -523,36 +380,22 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                     memcpy(indexStream.data, indexVector.data(), indexStream.streamSize);
                 }
                 indexStream.elementCount = static_cast<uint32_t>(indexVector.size());
+                indexStream.attributeType = static_cast<uint32_t>(AttributeType::Index);
                 mesh.streams.push_back(indexStream);
             }
 
             // normals
             if (normals.size() > 0)
             {
-                MeshStream normalStream;
-                normalStream.elementType = static_cast<uint32_t>(StreamElementType::Float);
-                normalStream.elementVectorSize = 3;
-                normalStream.elementSize = 4;
-                normalStream.streamSize = normalStream.elementSize * normalStream.elementVectorSize * static_cast<uint32_t>(uniqueVertices.size());
-                normalStream.data = new uint8_t[normalStream.streamSize];
-                uint32_t dataOffset = 0;
-                for (int vertexIndex = 0; vertexIndex < uniqueVertices.size(); ++vertexIndex)
-                {
-                    float normal[3];
-                    const auto normalData = normals[uniqueVertices[vertexIndex].normal].mData;
-                    normal[0] = static_cast<float>(normalData[0]);
-                    normal[1] = static_cast<float>(normalData[1]);
-                    normal[2] = static_cast<float>(normalData[2]);
-                    memcpy(normalStream.data + dataOffset, normal, sizeof(normal));
-                    dataOffset += normalStream.elementSize * normalStream.elementVectorSize;
-                }
-                normalStream.elementCount = static_cast<uint32_t>(uniqueVertices.size());
+                uint32_t fieldOffset = offsetof(IndexSet, normal);
+                VectorStream normalStream = createFloat3Stream(normals, uniqueVertices, fieldOffset);
+                normalStream.attributeType = static_cast<uint32_t>(AttributeType::Normal);
                 mesh.streams.push_back(normalStream);
             }
             // texture coordinates
             if (UVs.size() > 0)
             {
-                MeshStream uvStream;
+                VectorStream uvStream;
                 uvStream.elementType = static_cast<uint32_t>(StreamElementType::Float);
                 uvStream.elementVectorSize = 2;
                 uvStream.elementSize = 4;
@@ -569,13 +412,29 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                     dataOffset += uvStream.elementSize * uvStream.elementVectorSize;
                 }
                 uvStream.elementCount = static_cast<uint32_t>(uniqueVertices.size());
+                uvStream.attributeType = static_cast<uint32_t>(AttributeType::UV);
                 mesh.streams.push_back(uvStream);
             }
-
+            // tangents
+            if (tangents.size() > 0)
+            {
+                uint32_t fieldOffset = offsetof(IndexSet, tangent);
+                VectorStream tangentStream = createFloat3Stream(tangents, uniqueVertices, fieldOffset);
+                tangentStream.attributeType = static_cast<uint32_t>(AttributeType::Tangent);
+                mesh.streams.push_back(tangentStream);
+            }
+            // binormals
+            if (binormals.size() > 0)
+            {
+                uint32_t fieldOffset = offsetof(IndexSet, binormal);
+                VectorStream binormalStream = createFloat3Stream(binormals, uniqueVertices, fieldOffset);
+                binormalStream.attributeType = static_cast<uint32_t>(AttributeType::Binormal);
+                mesh.streams.push_back(binormalStream);
+            }
             // import vertices
             if (uniqueVertices.size() > 0 && controlPoints != nullptr) // remove 4th dimension
             {
-                MeshStream vertexStream;
+                VectorStream vertexStream;
                 vertexStream.elementType = static_cast<uint32_t>(StreamElementType::Float);
                 vertexStream.elementVectorSize = 3;
                 if (settings.convertPositionsToFloat32)
@@ -613,6 +472,7 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                     dataOffset += vertexStream.elementSize * vertexStream.elementVectorSize;
                 }
                 vertexStream.elementCount = static_cast<uint32_t>(uniqueVertices.size());
+                vertexStream.attributeType = static_cast<uint32_t>(AttributeType::Position);
                 mesh.streams.push_back(vertexStream);
             }
 
@@ -621,17 +481,96 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
         }
     }
 
+    uint32_t materialNumber = 0;
     for (int nodeIndex = 0; nodeIndex < scene->GetNodeCount(); ++nodeIndex)
     {
         auto fbxNode = scene->GetNode(nodeIndex);
+        // object material
+        int materialCount = fbxNode->GetSrcObjectCount<FbxSurfaceMaterial>();
+        std::vector<uint32_t> materialIndices;
+        for (int materialIndex = 0; materialIndex < materialCount; ++materialIndex)
+        {
+            FbxSurfaceMaterial* material = fbxNode->GetSrcObject<FbxSurfaceMaterial>(materialIndex);
+            auto name = material->GetName();
+            Material resultMtrl;
+            resultMtrl.materialName = name;
+            // TODO: process hardware shaders. See 
+            // http://help.autodesk.com/view/FBX/2018/ENU/?guid=__cpp_ref__import_scene_2_display_material_8cxx_example_html
+            //const FbxImplementation* implementationHLSL = GetImplementation(material, FBXSDK_IMPLEMENTATION_HLSL);
+            //const FbxImplementation* implementationCGFX = GetImplementation(material, FBXSDK_IMPLEMENTATION_CGFX);
+            if (material->GetClassId().Is(FbxSurfacePhong::ClassId))
+            {
+                auto phongMaterial = FbxCast<FbxSurfacePhong>(material);
+                // TODO: add more parameters in future if needed (***Factors, Bump, Displacement,...)
+                auto ambientParam = getMaterialParam("Ambient", phongMaterial->Ambient);
+                resultMtrl.float3Params.push_back(ambientParam);
+                auto diffuseParam = getMaterialParam("Diffuse", phongMaterial->Diffuse);
+                resultMtrl.float3Params.push_back(diffuseParam);
+                auto emissiveParam = getMaterialParam("Emissive", phongMaterial->Emissive);
+                resultMtrl.float3Params.push_back(emissiveParam);
+                auto emissiveFactorParam = getMaterialParam("EmissiveFactor", phongMaterial->EmissiveFactor);
+                resultMtrl.floatParams.push_back(emissiveFactorParam);
+                auto reflectionParam = getMaterialParam("Reflection", phongMaterial->Reflection);
+                resultMtrl.float3Params.push_back(reflectionParam);
+                auto reflectionFactorParam = getMaterialParam("ReflectionFactor", phongMaterial->ReflectionFactor);
+                resultMtrl.floatParams.push_back(reflectionFactorParam);
+                auto shininessParam = getMaterialParam("Shininess", phongMaterial->Shininess);
+                resultMtrl.floatParams.push_back(shininessParam);
+                auto specularParam = getMaterialParam("Specular", phongMaterial->Specular);
+                resultMtrl.float3Params.push_back(specularParam);
+                auto transparencyFactorParam = getMaterialParam("TransparencyFactor", phongMaterial->TransparencyFactor);
+                resultMtrl.floatParams.push_back(transparencyFactorParam);
+                auto transparentParam = getMaterialParam("TransparentColor", phongMaterial->TransparentColor);
+                resultMtrl.float3Params.push_back(transparentParam);
+            }
+            else if (material->GetClassId().Is(FbxSurfaceLambert::ClassId))
+            {
+                auto lambertMaterial = FbxCast<FbxSurfaceLambert>(material);
+                // TODO: add more parameters in future if needed (***Factors, Bump, Displacement,...)
+                auto ambientParam = getMaterialParam("Ambient", lambertMaterial->Ambient);
+                resultMtrl.float3Params.push_back(ambientParam);
+                auto diffuseParam = getMaterialParam("Diffuse", lambertMaterial->Diffuse);
+                resultMtrl.float3Params.push_back(diffuseParam);
+                auto emissiveParam = getMaterialParam("Emissive", lambertMaterial->Emissive);
+                resultMtrl.float3Params.push_back(emissiveParam);
+                auto emissiveFactorParam = getMaterialParam("EmissiveFactor", lambertMaterial->EmissiveFactor);
+                resultMtrl.floatParams.push_back(emissiveFactorParam);
+                auto transparencyFactorParam = getMaterialParam("TransparencyFactor", lambertMaterial->TransparencyFactor);
+                resultMtrl.floatParams.push_back(transparencyFactorParam);
+                auto transparentParam = getMaterialParam("TransparentColor", lambertMaterial->TransparentColor);
+                resultMtrl.float3Params.push_back(transparentParam);
+            }
+            //addTextureProperty(resultMtrl.mapNameParams, material, FbxSurfaceMaterial::sDiffuse);
+            //...
+
+            std::vector<std::string> propertyNames;
+            auto property = material->GetFirstProperty();
+            while (property.IsValid())
+            {
+                propertyNames.push_back(property.GetName().Buffer());
+                auto textureNames = getTextureNames(property);
+                if (!textureNames.paramName.empty() && !textureNames.value.empty())
+                {
+                    resultMtrl.mapNameParams.push_back(textureNames);
+                }
+                property = material->GetNextProperty(property);
+            }
+            resultMtrl.materialId = materialNumber;
+            materialIndices.push_back(materialNumber);
+            result.sceneMaterials.push_back(resultMtrl);
+            materialNumber++;
+        }
+        // object info
         if (settings.convertPositionsToFloat32)
         {
             auto node = getObjectNode<float>(fbxNode, fbxMeshMap);
+            node.materialIndices = materialIndices;
             result.objectsFloat.push_back(node);
         }
         else
         {
             auto node = getObjectNode<double>(fbxNode, fbxMeshMap);
+            node.materialIndices = materialIndices;
             result.objectsDouble.push_back(node);
         }
     }

@@ -102,7 +102,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2018.1.1\lib\vs2015\x86\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,7 +118,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2018.1.1\lib\vs2015\x64\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -138,7 +138,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2018.1.1\lib\vs2015\x86\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -158,30 +158,36 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Program Files\Autodesk\FBX\FBX SDK\2018.1.1\lib\vs2015\x64\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="lib\jsoncpp\include\json\json-forwards.h" />
     <ClInclude Include="lib\jsoncpp\include\json\json.h" />
     <ClInclude Include="src\Common.h" />
+    <ClInclude Include="src\ExportMaterial.h" />
     <ClInclude Include="src\ExportMesh.h" />
     <ClInclude Include="src\ExportScene.h" />
     <ClInclude Include="src\ImportFBX.h" />
+    <ClInclude Include="src\IndexSet.h" />
+    <ClInclude Include="src\ObjectNode.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\StreamMaterialData.h" />
     <ClInclude Include="src\StreamMeshData.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\Utils.h" />
+    <ClInclude Include="src\UtilsFBX.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lib\jsoncpp\src\jsoncpp.cpp" />
     <ClCompile Include="src\ConvertFBXtoSMSH.cpp" />
+    <ClCompile Include="src\ExportMaterial.cpp" />
     <ClCompile Include="src\ExportMesh.cpp" />
     <ClCompile Include="src\ExportScene.cpp" />
     <ClCompile Include="src\ImportFBX.cpp" />
     <ClCompile Include="src\stdafx.cpp" />
     <ClCompile Include="src\Utils.cpp" />
+    <ClCompile Include="src\UtilsFBX.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

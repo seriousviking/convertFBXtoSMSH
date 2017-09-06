@@ -16,19 +16,29 @@ enum class StreamElementType
     UInt,
 };
 
+enum class AttributeType
+{
+    Index,
+    Position,
+    Normal,
+    UV,
+    Tangent,
+    Binormal
+};
+
 struct StreamMeshHeader
 {
     uint32_t magicMESH = 0x4853454D;//0x4D455348;
     uint32_t headerSize = sizeof(StreamMeshHeader);
     uint32_t version = 1;
     uint32_t streamCount = 0;
-    uint32_t materialId = 0;
 };
 
-struct MeshStream
+struct VectorStream
 {
     uint32_t magicSTRM = 0x4D525453;//0x5354524D;
     uint32_t streamSize = 0;
+    uint32_t attributeType = 0; //see enum AttributeType
     uint32_t elementCount = 0;
     uint32_t elementType = static_cast<uint32_t>(StreamElementType::Float);//StreamElementType
     uint32_t elementSize = 0;// size of one of <elementType>
@@ -39,5 +49,5 @@ struct MeshStream
 struct StreamMesh
 {
     StreamMeshHeader header;
-    std::vector<MeshStream> streams;
+    std::vector<VectorStream> streams;
 };

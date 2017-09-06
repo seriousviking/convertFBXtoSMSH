@@ -58,6 +58,18 @@
     <ClInclude Include="src\Utils.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\UtilsFBX.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ObjectNode.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IndexSet.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ExportMaterial.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lib\jsoncpp\src\jsoncpp.cpp">
@@ -79,6 +91,12 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Utils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UtilsFBX.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ExportMaterial.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

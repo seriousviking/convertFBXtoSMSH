@@ -8,20 +8,7 @@
 #pragma once
 #include "StreamMeshData.h"
 #include "StreamMaterialData.h"
-
-const uint64_t InvalidID = (uint64_t)-1;
-
-template <typename FloatType>
-struct ObjectNode
-{
-    uint64_t uid;
-    uint64_t parentUid = InvalidID;
-    std::string name;
-    FloatType translation[3];
-    FloatType rotation[4];
-    FloatType scale[3];
-    uint32_t meshIndex;
-};
+#include "ObjectNode.h"
 
 struct ImportFBXResult
 {
@@ -35,12 +22,12 @@ struct ImportFBXResult
 struct ImportSettings
 {
     bool convertPositionsToFloat32 = true;
-    bool importVertexColors = false;
+    bool importVertexColors = false;// not implemented yet
     bool importUVs = true;
     bool importNormals = true;
     float mergeNormalThresholdAngle = 0.0f; // angle is in degrees
-    bool importTangents = false; // not implemented yet
-    bool importBinormals = false; // not implemented yet
+    bool importTangents = false;
+    bool importBinormals = false;
     bool compactSceneJson = true;
 };
 
