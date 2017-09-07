@@ -551,6 +551,15 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                 auto textureNames = getTextureNames(property);
                 if (!textureNames.paramName.empty() && !textureNames.value.empty())
                 {
+                    // set different relative path for texture maps
+                    if (!settings.textureRelativePath.empty())
+                    {
+                        for (size_t nameIndex = 0; nameIndex < textureNames.value.size(); ++nameIndex)
+                        {
+                            auto &namePair = textureNames.value[nameIndex];
+                            namePair.second = setRelativePath(namePair.second, settings.textureRelativePath);
+                        }
+                    }
                     resultMtrl.mapNameParams.push_back(textureNames);
                 }
                 property = material->GetNextProperty(property);

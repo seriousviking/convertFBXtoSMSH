@@ -29,6 +29,7 @@ struct ImportSettings
     bool importTangents = false;
     bool importBinormals = false;
     bool compactSceneJson = true;
+    std::string textureRelativePath = "/textures/";
 };
 
 ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &settings);

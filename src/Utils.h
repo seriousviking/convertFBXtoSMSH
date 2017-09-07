@@ -110,3 +110,5 @@ Json::Value toJsonArray(T arrayData[N])
     }
     return jResult;
 }
+
+std::string setRelativePath(const std::string &sourcePath, const std::string &relativePath);
