@@ -43,7 +43,7 @@ struct VectorStream
     uint32_t elementType = static_cast<uint32_t>(StreamElementType::Float);//StreamElementType
     uint32_t elementSize = 0;// size of one of <elementType>
     uint32_t elementVectorSize = 0;// number of <elementType> in one element of stream
-    uint8_t* data = nullptr;
+    std::vector<uint8_t> data;
 };
 
 struct StreamMesh

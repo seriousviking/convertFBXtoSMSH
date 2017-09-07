@@ -138,19 +138,20 @@ VectorStream createFloat3Stream(
     meshStream.elementType = static_cast<uint32_t>(StreamElementType::Float);
     meshStream.elementVectorSize = 3;
     meshStream.elementSize = 4;
-    meshStream.streamSize = meshStream.elementSize * meshStream.elementVectorSize * static_cast<uint32_t>(vertexIndices.size());
-    meshStream.data = new uint8_t[meshStream.streamSize];
+    uint32_t dataSize = meshStream.elementSize * meshStream.elementVectorSize * static_cast<uint32_t>(vertexIndices.size());
+    meshStream.streamSize = dataSize + sizeof(meshStream.magicSTRM) + sizeof(meshStream.streamSize);
+    meshStream.data.resize(dataSize);
     uint32_t dataOffset = 0;
     for (int index = 0; index < vertexIndices.size(); ++index)
     {
-        float normal[3];
+        float floatData[3];
         const auto &indexSet = vertexIndices[index];
         uint32_t indexValue = *(uint32_t*)(((const uint8_t*)&indexSet) + indexFieldOffset);
-        const auto normalData = srcData[indexValue].mData;
-        normal[0] = static_cast<float>(normalData[0]);
-        normal[1] = static_cast<float>(normalData[1]);
-        normal[2] = static_cast<float>(normalData[2]);
-        memcpy(meshStream.data + dataOffset, normal, sizeof(normal));
+        const auto floatSrcData = srcData[indexValue].mData;
+        floatData[0] = static_cast<float>(floatSrcData[0]);
+        floatData[1] = static_cast<float>(floatSrcData[1]);
+        floatData[2] = static_cast<float>(floatSrcData[2]);
+        memcpy(meshStream.data.data() + dataOffset, floatData, sizeof(floatData));
         dataOffset += meshStream.elementSize * meshStream.elementVectorSize;
     }
     meshStream.elementCount = static_cast<uint32_t>(vertexIndices.size());

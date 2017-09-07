@@ -363,21 +363,22 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                 {
                     indexStream.elementSize = 4;
                 }
-                indexStream.streamSize = indexStream.elementSize * indexStream.elementVectorSize * static_cast<uint32_t>(indexVector.size());
-                indexStream.data = new uint8_t[indexStream.streamSize];
+                uint32_t dataSize = indexStream.elementSize * indexStream.elementVectorSize * static_cast<uint32_t>(indexVector.size());
+                indexStream.streamSize = dataSize + sizeof(indexStream.magicSTRM) + sizeof(indexStream.streamSize);
+                indexStream.data.reserve(dataSize);
                 uint32_t dataOffset = 0;
                 if (indexStream.elementSize == 2)
                 {
                     for (size_t index = 0; index < indexVector.size(); ++index)
                     {
                         uint16_t indexValue = static_cast<uint16_t>(indexVector[index]);
-                        memcpy(indexStream.data + dataOffset, &indexValue, sizeof(indexValue));
+                        memcpy(indexStream.data.data() + dataOffset, &indexValue, sizeof(indexValue));
                         dataOffset += indexStream.elementSize * indexStream.elementVectorSize;
                     }
                 }
                 else //if (indexStream.elementSize == 4)
                 {
-                    memcpy(indexStream.data, indexVector.data(), indexStream.streamSize);
+                    memcpy(indexStream.data.data(), indexVector.data(), indexStream.streamSize);
                 }
                 indexStream.elementCount = static_cast<uint32_t>(indexVector.size());
                 indexStream.attributeType = static_cast<uint32_t>(AttributeType::Index);
@@ -399,8 +400,9 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                 uvStream.elementType = static_cast<uint32_t>(StreamElementType::Float);
                 uvStream.elementVectorSize = 2;
                 uvStream.elementSize = 4;
-                uvStream.streamSize = uvStream.elementSize * uvStream.elementVectorSize * static_cast<uint32_t>(uniqueVertices.size());
-                uvStream.data = new uint8_t[uvStream.streamSize];
+                uint32_t dataSize = uvStream.elementSize * uvStream.elementVectorSize * static_cast<uint32_t>(uniqueVertices.size());
+                uvStream.streamSize = dataSize + sizeof(uvStream.magicSTRM) + sizeof(uvStream.streamSize);
+                uvStream.data.resize(uvStream.streamSize);
                 uint32_t dataOffset = 0;
                 for (int vertexIndex = 0; vertexIndex < uniqueVertices.size(); ++vertexIndex)
                 {
@@ -408,7 +410,7 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                     const auto uvData = UVs[uniqueVertices[vertexIndex].uv].mData;
                     uv[0] = static_cast<float>(uvData[0]);
                     uv[1] = static_cast<float>(uvData[1]);
-                    memcpy(uvStream.data + dataOffset, uv, sizeof(uv));
+                    memcpy(uvStream.data.data() + dataOffset, uv, sizeof(uv));
                     dataOffset += uvStream.elementSize * uvStream.elementVectorSize;
                 }
                 uvStream.elementCount = static_cast<uint32_t>(uniqueVertices.size());
@@ -445,8 +447,9 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                 {
                     vertexStream.elementSize = 8;
                 }
-                vertexStream.streamSize = vertexStream.elementSize * vertexStream.elementVectorSize * static_cast<uint32_t>(uniqueVertices.size());
-                vertexStream.data = new uint8_t[vertexStream.streamSize];
+                uint32_t dataSize = vertexStream.elementSize * vertexStream.elementVectorSize * static_cast<uint32_t>(uniqueVertices.size());
+                vertexStream.streamSize = dataSize + sizeof(vertexStream.magicSTRM) + sizeof(vertexStream.streamSize);
+                vertexStream.data.resize(dataSize);
                 uint32_t dataOffset = 0;
                 for (int vertexIndex = 0; vertexIndex < uniqueVertices.size(); ++vertexIndex)
                 {
@@ -459,7 +462,7 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                         position[0] = static_cast<float>(controlPoint.mData[0]);
                         position[1] = static_cast<float>(controlPoint.mData[1]);
                         position[2] = static_cast<float>(controlPoint.mData[2]);
-                        memcpy(vertexStream.data + dataOffset, position, sizeof(position));
+                        memcpy(vertexStream.data.data() + dataOffset, position, sizeof(position));
                     }
                     else
                     {
@@ -467,7 +470,7 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                         position[0] = controlPoint.mData[0];
                         position[1] = controlPoint.mData[1];
                         position[2] = controlPoint.mData[2];
-                        memcpy(vertexStream.data + dataOffset, position, sizeof(position));
+                        memcpy(vertexStream.data.data() + dataOffset, position, sizeof(position));
                     }
                     dataOffset += vertexStream.elementSize * vertexStream.elementVectorSize;
                 }

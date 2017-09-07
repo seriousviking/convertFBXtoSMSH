@@ -36,7 +36,7 @@ bool exportMeshToFile(const std::string &fileName, const StreamMesh &meshData)
         writeToStream(ofs, streamData.elementSize);
         writeToStream(ofs, streamData.elementVectorSize);
         writeToStream(ofs, streamData.attributeType);
-        ofs.write((char*)streamData.data, streamData.elementCount);
+        ofs.write((char*)streamData.data.data(), streamData.data.size());
     }
     ofs.close();
     return true;
