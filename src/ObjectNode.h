@@ -6,6 +6,8 @@
 // ObjectNode class
 //-----------------------------------------------------------------------------
 #pragma once
+#include <cstdint>
+#include <vector>
 
 const uint64_t InvalidUID = (uint64_t)-1;
 const uint32_t InvalidID = (uint32_t)-1;

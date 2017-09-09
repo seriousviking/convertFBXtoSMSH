@@ -7,7 +7,8 @@
 //-----------------------------------------------------------------------------
 
 #pragma once
-#include "stdafx.h"
+#include <cstdint>
+#include <vector>
 
 enum class StreamElementType
 {

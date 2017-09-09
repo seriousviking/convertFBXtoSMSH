@@ -6,7 +6,9 @@
 // material data structures
 //-----------------------------------------------------------------------------
 #pragma once
-#include "stdafx.h"
+#include <vector>
+#include <string>
+#include <utility>
 #include "ObjectNode.h"
 
 template <typename T>
