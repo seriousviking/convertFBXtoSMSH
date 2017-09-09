@@ -26,9 +26,15 @@ enum class AttributeType
     Binormal
 };
 
+namespace StreamConstants
+{
+    const uint32_t MagicMESH = 0x4853454D;//0x4D455348;
+    const uint32_t MagicSTRM = 0x4D525453;//0x5354524D;
+}
+
 struct StreamMeshHeader
 {
-    uint32_t magicMESH = 0x4853454D;//0x4D455348;
+    uint32_t magicMESH = StreamConstants::MagicMESH;
     uint32_t headerSize = sizeof(StreamMeshHeader);
     uint32_t version = 1;
     uint32_t streamCount = 0;
@@ -36,7 +42,7 @@ struct StreamMeshHeader
 
 struct VectorStream
 {
-    uint32_t magicSTRM = 0x4D525453;//0x5354524D;
+    uint32_t magicSTRM = StreamConstants::MagicSTRM;
     uint32_t streamSize = 0;
     uint32_t attributeType = 0; //see enum AttributeType
     uint32_t elementCount = 0;
