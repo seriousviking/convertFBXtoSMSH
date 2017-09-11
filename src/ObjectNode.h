@@ -12,6 +12,13 @@
 const uint64_t InvalidUID = (uint64_t)-1;
 const uint32_t InvalidID = (uint32_t)-1;
 
+struct MaterialIndex
+{
+    uint32_t materialId;
+    uint32_t startIndex;
+    uint32_t indexCount;
+};
+
 template <typename FloatType>
 struct ObjectNode
 {
@@ -22,7 +29,6 @@ struct ObjectNode
     FloatType rotation[4];
     FloatType scale[3];
     uint32_t meshIndex = InvalidID;
-    //uint32_t materialIndex = InvalidID;
-    std::vector<uint32_t> materialIndices; // TODO: names???
+    std::vector<MaterialIndex> materialIndices; // TODO: names???
 };
 

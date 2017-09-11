@@ -10,5 +10,6 @@
 
 struct ImportFBXResult;
 
-bool exportSceneToFile(const std::string &fileName, const ImportFBXResult &importData, 
+bool exportSceneToFile(const std::string &fileName, 
+                       const ImportFBXResult &importData, 
                        bool compactJson);

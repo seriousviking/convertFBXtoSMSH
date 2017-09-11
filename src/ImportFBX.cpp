@@ -576,13 +576,46 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
         if (settings.convertPositionsToFloat32)
         {
             auto node = getObjectNode<float>(fbxNode, fbxMeshMap);
-            node.materialIndices = materialIndices;
+            // TODO: extract material faces from FBX, sort by materials
+            if (node.meshIndex != InvalidID)
+            {
+                uint32_t indexCount = 0;
+                for (uint32_t meshStreamIndex = 0;
+                    meshStreamIndex < result.sceneMeshes[node.meshIndex].streams.size();
+                    ++meshStreamIndex)
+                {
+                    auto &stream = result.sceneMeshes[node.meshIndex].streams[meshStreamIndex];
+                    if (stream.attributeType == static_cast<uint32_t>(AttributeType::Index))
+                    {
+                        indexCount = stream.elementCount;
+                    }
+                }
+                MaterialIndex matIndex = { 0, 0, indexCount };
+                node.materialIndices.push_back(matIndex);
+            }
             result.objectsFloat.push_back(node);
         }
         else
         {
             auto node = getObjectNode<double>(fbxNode, fbxMeshMap);
-            node.materialIndices = materialIndices;
+            // TODO: extract material faces from FBX, sort by materials
+            // TODO: implement in separate function
+            if (node.meshIndex != InvalidID)
+            {
+                uint32_t indexCount = 0;
+                for (uint32_t meshStreamIndex = 0;
+                    meshStreamIndex < result.sceneMeshes[node.meshIndex].streams.size();
+                    ++meshStreamIndex)
+                {
+                    auto &stream = result.sceneMeshes[node.meshIndex].streams[meshStreamIndex];
+                    if (stream.attributeType == static_cast<uint32_t>(AttributeType::Index))
+                    {
+                        indexCount = stream.elementCount;
+                    }
+                }
+                MaterialIndex matIndex = { 0, 0, indexCount };
+                node.materialIndices.push_back(matIndex);
+            }
             result.objectsDouble.push_back(node);
         }
     }

@@ -29,14 +29,18 @@ void appendObjectNodes(Json::Value &jObjectArray, const std::vector<ObjectNode<F
         jNode["name"] = objectNode.name;
         jNode["uid"] = intToHexString(objectNode.uid); // or just save as uint64_t?
         jNode["parentUid"] = intToHexString(objectNode.parentUid); // or just save as uint64_t?
-        if (objectNode.meshIndex != InvalidUID)
+        if (objectNode.meshIndex != InvalidID)
         {
             jNode["meshIndex"] = objectNode.meshIndex;
         }
         Json::Value jMaterialArray(Json::arrayValue);
         for (const auto &materialIndex : objectNode.materialIndices)
         {
-            jMaterialArray.append(materialIndex);
+            Json::Value jMaterial;
+            jMaterial["materialId"] = materialIndex.materialId;
+            jMaterial["startIndex"] = materialIndex.startIndex;
+            jMaterial["indexCount"] = materialIndex.indexCount;
+            jMaterialArray.append(jMaterial);
         }
         jNode["materialIndex"] = jMaterialArray;
         jNode["transform"] = jTransform;
@@ -44,7 +48,9 @@ void appendObjectNodes(Json::Value &jObjectArray, const std::vector<ObjectNode<F
     }
 }
 
-bool exportSceneToFile(const std::string &fileName, const ImportFBXResult &importData, bool compactJson)
+bool exportSceneToFile(const std::string &fileName, 
+                       const ImportFBXResult &importData, 
+                       bool compactJson)
 {
     Json::Value jObjectArray;
     appendObjectNodes(jObjectArray, importData.objectsFloat);
