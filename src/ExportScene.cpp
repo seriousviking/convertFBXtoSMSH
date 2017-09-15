@@ -50,6 +50,7 @@ void appendObjectNodes(Json::Value &jObjectArray, const std::vector<ObjectNode<F
 
 bool exportSceneToFile(const std::string &fileName, 
                        const ImportFBXResult &importData, 
+                       const std::string &meshFilePathPrefix,
                        bool compactJson)
 {
     Json::Value jObjectArray;
@@ -57,6 +58,9 @@ bool exportSceneToFile(const std::string &fileName,
     appendObjectNodes(jObjectArray, importData.objectsDouble);
 
     Json::Value jsonRoot;
+    Json::Value jMeshParams;
+    jMeshParams["meshFilePathPrefix"] = meshFilePathPrefix;
+    jsonRoot["meshParams"] = jMeshParams;
     jsonRoot["objects"] = jObjectArray;
 
     Json::Value jMaterialArray;

@@ -18,7 +18,7 @@ bool exportMeshToFile(const std::string &fileName, const StreamMesh &meshData)
 {
     using namespace std;
     ofstream ofs;
-    ofs.open(fileName, ios_base::beg | ios_base::binary);
+    ofs.open(fileName, ios_base::binary | ios_base::out | ios_base::trunc);//ios_base::beg
     if (!ofs.is_open())
     {
         return false;

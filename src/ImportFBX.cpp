@@ -365,7 +365,7 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                 }
                 uint32_t dataSize = indexStream.elementSize * indexStream.elementVectorSize * static_cast<uint32_t>(indexVector.size());
                 indexStream.streamSize = dataSize + sizeof(indexStream.magicSTRM) + sizeof(indexStream.streamSize);
-                indexStream.data.reserve(dataSize);
+                indexStream.data.resize(dataSize);
                 uint32_t dataOffset = 0;
                 if (indexStream.elementSize == 2)
                 {

@@ -27,6 +27,8 @@
 #include <memory>
 #include <sstream>
 #include <iomanip>
+#include <clocale>
+#include <experimental/filesystem>
 
 // JsonCpp, disable annoying deprecation warnings
 #pragma warning(push)
