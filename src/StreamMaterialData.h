@@ -28,5 +28,6 @@ struct Material
     std::vector<MaterialParam<float[3]>> float3Params;
     std::vector<MaterialParam<float[4]>> float4Params;
     std::vector<MaterialParam<int>> intParams;
-    std::vector<MaterialParam<std::vector<StringPair>>> mapNameParams; // MapName : MapFile. Multiple values for layered textures
+    std::vector<MaterialParam<std::vector<StringPair>>> mapNameVectorParams; // MapName : MapFile. Multiple values for layered textures
+    std::vector<MaterialParam<std::string>> mapNameParams;
 };

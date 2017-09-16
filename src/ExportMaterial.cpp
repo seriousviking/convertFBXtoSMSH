@@ -32,6 +32,15 @@ Json::Value serializeMaterialParam(const MaterialParam<int> &param)
     return result;
 }
 
+template<>
+Json::Value serializeMaterialParam(const MaterialParam<std::string> &param)
+{
+    Json::Value result(Json::objectValue);
+    result["paramName"] = param.paramName;
+    result["value"] = param.value;
+    return result;
+}
+
 // TODO: improve template specializations
 template<typename T, size_t N>
 Json::Value serializeMaterialArrayParam(const MaterialParam<T[N]> &param)
@@ -92,6 +101,12 @@ Json::Value serializeMaterial(const Material &material)
         jFloat4Params.append(serializeMaterialArrayParam(float4Param));
     }
     result["float4Params"] = jFloat4Params;
+    Json::Value jMapNameVectorParams(Json::arrayValue);
+    for (const auto &mapNameParam : material.mapNameVectorParams)
+    {
+        jMapNameVectorParams.append(serializeMaterialParam(mapNameParam));
+    }
+    result["mapNameVectorParams"] = jMapNameVectorParams;
     Json::Value jMapNameParams(Json::arrayValue);
     for (const auto &mapNameParam : material.mapNameParams)
     {

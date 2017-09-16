@@ -563,7 +563,12 @@ ImportFBXResult importFBXFile(const std::string &path, const ImportSettings &set
                             namePair.second = setRelativePath(namePair.second, settings.textureRelativePath);
                         }
                     }
-                    resultMtrl.mapNameParams.push_back(textureNames);
+                    resultMtrl.mapNameVectorParams.push_back(textureNames);
+                    // not a good approach but should be ok for now
+                    MaterialParam<std::string> singleMapParam;
+                    singleMapParam.paramName = textureNames.value[0].first;
+                    singleMapParam.value = textureNames.value[0].second;
+                    resultMtrl.mapNameParams.push_back(singleMapParam);
                 }
                 property = material->GetNextProperty(property);
             }
