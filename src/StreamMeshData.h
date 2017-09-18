@@ -51,6 +51,15 @@ struct VectorStream
     uint32_t elementSize = 0;// size of one of <elementType>
     uint32_t elementVectorSize = 0;// number of <elementType> in one element of stream
     std::vector<uint8_t> data;
+
+    inline uint32_t headerSize() const 
+    { 
+        uint32_t size = sizeof(magicSTRM) + sizeof(streamSize) + sizeof(attributeType);
+        size += sizeof(elementCount) + sizeof(elementType);
+        size += sizeof(elementSize) + sizeof(elementVectorSize);
+        return size;
+            
+    }
 };
 
 struct StreamMesh

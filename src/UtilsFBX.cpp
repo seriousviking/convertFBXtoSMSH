@@ -138,8 +138,9 @@ VectorStream createFloat3Stream(
     meshStream.elementType = static_cast<uint32_t>(StreamElementType::Float);
     meshStream.elementVectorSize = 3;
     meshStream.elementSize = 4;
+
     uint32_t dataSize = meshStream.elementSize * meshStream.elementVectorSize * static_cast<uint32_t>(vertexIndices.size());
-    meshStream.streamSize = dataSize + sizeof(meshStream.magicSTRM) + sizeof(meshStream.streamSize);
+    meshStream.streamSize = dataSize + meshStream.headerSize();
     meshStream.data.resize(dataSize);
     uint32_t dataOffset = 0;
     for (int index = 0; index < vertexIndices.size(); ++index)
